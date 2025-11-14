@@ -1,128 +1,145 @@
-<!-- Header com logout -->
-<div class="dashboard-header">
-  <h1 class="dashboard-title">Dashboard Ford</h1>
-  <button type="button" class="btn btn-outline-secondary" (click)="logout()">
-    <i class="bi bi-box-arrow-right me-2"></i>
-    Sair do Sistema
-  </button>
-</div>
-
-<!-- Container principal -->
-<div class="dashboard-main">
-  <!-- 4 Cards de Métricas -->
-  <div class="metrics-row">
-    <!-- Card Veículo com Dropdown -->
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <h3>Veículo</h3>
-      </div>
-      <div class="metric-card-content">
-        <select
-          class="form-select vehicle-select"
-          [(ngModel)]="selectedVehicleName"
-          (change)="onVehicleChange()"
-        >
-          <option value="">Selecione...</option>
-          <option *ngFor="let vehicle of vehicles" [value]="vehicle.vehicle">
-            {{ vehicle.vehicle }}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Card Total de Vendas -->
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <h3>Total de Vendas</h3>
-      </div>
-      <div class="metric-card-content">
-        <span class="metric-value primary">{{
-          selectedVehicle?.volumetotal || 0
-        }}</span>
-        <span class="metric-unit">Unid.</span>
-      </div>
-    </div>
-
-    <!-- Card Conectados -->
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <h3>Conectados</h3>
-      </div>
-      <div class="metric-card-content">
-        <span class="metric-value success">{{
-          selectedVehicle?.connected || 0
-        }}</span>
-        <span class="metric-unit">Unid.</span>
-      </div>
-    </div>
-
-    <!-- Card Update Software -->
-    <div class="metric-card">
-      <div class="metric-card-header">
-        <h3>Update Software</h3>
-      </div>
-      <div class="metric-card-content">
-        <span class="metric-value info">{{
-          selectedVehicle?.softwareUpdates || 0
-        }}</span>
-        <span class="metric-unit">Unid.</span>
-      </div>
+<!-- Wrapper com fundo -->
+<div class="dashboard-wrapper">
+  <!-- Menu Hambúrguer -->
+  <div class="hamburger-menu">
+    <button class="hamburger-btn" (click)="toggleMenu()">
+      <i class="bi bi-list"></i>
+    </button>
+    <div class="dropdown-menu" [ngClass]="{ show: menuOpen }">
+      <button class="nav-btn-menu" (click)="goHome()">
+        <i class="bi bi-house-door"></i> Home
+      </button>
+      <button class="nav-btn-menu" (click)="goToDashboard()">
+        <i class="bi bi-graph-up"></i> Dashboard
+      </button>
+      <button class="nav-btn-menu" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Sair
+      </button>
     </div>
   </div>
 
-  <!-- Imagem do Veículo Maior -->
-  <div class="vehicle-large-section" *ngIf="selectedVehicle">
-    <div class="vehicle-image-container">
-      <img
-        [src]="getVehicleImage(selectedVehicle.vehicle)"
-        [alt]="selectedVehicle.vehicle"
-        class="vehicle-large-image"
-      />
-    </div>
+  <!-- Título no topo -->
+  <div class="dashboard-title-section">
+    <h1 class="dashboard-title">Dashboard Ford</h1>
   </div>
 
-  <!-- Tabela de Dados do Veículo -->
-  <div class="table-section" *ngIf="selectedVehicle">
-    <div class="table-container">
-      <table class="vehicle-table">
-        <thead>
-          <tr class="table-header">
-            <th>Código - Vin</th>
-            <th>Odômetro</th>
-            <th>Nível de Combustível</th>
-            <th>Status</th>
-            <th>Lat.</th>
-            <th>Long.</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="table-row">
-            <td class="vin-input-cell">
-              <input
-                type="text"
-                class="form-control vin-table-input"
-                [(ngModel)]="vinCode"
-                (input)="onVinCodeChange()"
-                placeholder="Digite o código VIN"
-              />
-            </td>
-            <td>{{ selectedVehicleData?.odometer || "N/A" }}</td>
-            <td>{{ selectedVehicleData?.fuelLevel || "N/A" }}</td>
-            <td>{{ selectedVehicleData?.status || "N/A" }}</td>
-            <td>{{ selectedVehicleData?.latitude || "N/A" }}</td>
-            <td>{{ selectedVehicleData?.longitude || "N/A" }}</td>
-          </tr>
-          <tr
-            class="table-row no-data"
-            *ngIf="!selectedVehicleData && !vinCode"
+  <!-- Container principal -->
+  <div class="dashboard-main">
+    <!-- 4 Cards de Métricas -->
+    <div class="metrics-row">
+      <!-- Card Veículo com Dropdown -->
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <h3>Veículo</h3>
+        </div>
+        <div class="metric-card-content">
+          <select
+            class="form-select vehicle-select"
+            [(ngModel)]="selectedVehicleName"
+            (change)="onVehicleChange()"
           >
-            <td colspan="6" class="text-center text-muted py-4">
-              <i class="bi bi-info-circle me-2"></i>
-              Digite um código VIN para visualizar os dados
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            <option value="">Selecione...</option>
+            <option *ngFor="let vehicle of vehicles" [value]="vehicle.vehicle">
+              {{ vehicle.vehicle }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Card Total de Vendas -->
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <h3>Total de Vendas</h3>
+        </div>
+        <div class="metric-card-content">
+          <span class="metric-value primary">{{
+            selectedVehicle?.volumetotal || 0
+          }}</span>
+          <span class="metric-unit">Unid.</span>
+        </div>
+      </div>
+
+      <!-- Card Conectados -->
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <h3>Conectados</h3>
+        </div>
+        <div class="metric-card-content">
+          <span class="metric-value success">{{
+            selectedVehicle?.connected || 0
+          }}</span>
+          <span class="metric-unit">Unid.</span>
+        </div>
+      </div>
+
+      <!-- Card Update Software -->
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <h3>Update Software</h3>
+        </div>
+        <div class="metric-card-content">
+          <span class="metric-value info">{{
+            selectedVehicle?.softwareUpdates || 0
+          }}</span>
+          <span class="metric-unit">Unid.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Imagem do Veículo Maior -->
+    <div class="vehicle-large-section" *ngIf="selectedVehicle">
+      <div class="vehicle-image-container">
+        <img
+          [src]="getVehicleImage(selectedVehicle.vehicle)"
+          [alt]="selectedVehicle.vehicle"
+          class="vehicle-large-image"
+        />
+      </div>
+    </div>
+
+    <!-- Tabela de Dados do Veículo -->
+    <div class="table-section" *ngIf="selectedVehicle">
+      <div class="table-container">
+        <table class="vehicle-table">
+          <thead>
+            <tr class="table-header">
+              <th>Código - Vin</th>
+              <th>Odômetro</th>
+              <th>Nível de Combustível</th>
+              <th>Status</th>
+              <th>Lat.</th>
+              <th>Long.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-row">
+              <td class="vin-input-cell">
+                <input
+                  type="text"
+                  class="form-control vin-table-input"
+                  [(ngModel)]="vinCode"
+                  (input)="onVinCodeChange()"
+                  placeholder="Digite o código VIN"
+                />
+              </td>
+              <td>{{ selectedVehicleData?.odometer || "N/A" }}</td>
+              <td>{{ selectedVehicleData?.fuelLevel || "N/A" }}</td>
+              <td>{{ selectedVehicleData?.status || "N/A" }}</td>
+              <td>{{ selectedVehicleData?.latitude || "N/A" }}</td>
+              <td>{{ selectedVehicleData?.longitude || "N/A" }}</td>
+            </tr>
+            <tr
+              class="table-row no-data"
+              *ngIf="!selectedVehicleData && !vinCode"
+            >
+              <td colspan="6" class="text-center text-muted py-4">
+                <i class="bi bi-info-circle me-2"></i>
+                Digite um código VIN para visualizar os dados
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

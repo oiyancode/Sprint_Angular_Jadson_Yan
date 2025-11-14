@@ -5,6 +5,7 @@ import {
   ReactiveFormsModule,
   FormsModule,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import {
@@ -51,7 +52,11 @@ export class DashboardComponent implements OnInit {
 
   private searchSubject = new Subject<string>();
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private http: HttpClient
+  ) {
     this.searchForm = this.fb.group({
       vehicleModel: [''],
     });
@@ -271,8 +276,25 @@ export class DashboardComponent implements OnInit {
     return imageMap[vehicle] || '/ford.png';
   }
 
+  menuOpen: boolean = false;
+
+  toggleMenu() {
+    this.menuOpen = !this.menuOpen;
+  }
+
+  goHome() {
+    this.router.navigate(['/home']);
+    this.menuOpen = false;
+  }
+
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
+    this.menuOpen = false;
+  }
+
   logout() {
     localStorage.removeItem('isLoggedIn');
-    window.location.href = '/';
+    this.router.navigate(['/']);
+    this.menuOpen = false;
   }
 }
