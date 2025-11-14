@@ -1,34 +1,356 @@
-/* Estilos específicos do componente dashboard */
-
-/* Fundo ranger.png */
-.dashboard-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url("/ranger.png");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  z-index: -2;
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #003478 0%, #002855 100%);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-overlay {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: -1;
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-header .btn-outline-secondary {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dashboard-header .btn-outline-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Container principal */
-.dashboard-container {
+.dashboard-main {
   padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+  background: #f8f9fa;
+  min-height: calc(100vh - 120px);
+}
+
+/* 5 Cards de Métricas */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 52, 120, 0.1);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 52, 120, 0.15);
+}
+
+.metric-card-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.metric-card-header h3 {
+  color: #003478;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.metric-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.metric-value.primary {
+  color: #003478;
+}
+.metric-value.success {
+  color: #28a745;
+}
+.metric-value.info {
+  color: #007bff;
+}
+
+.metric-unit {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vehicle-select {
+  flex: 1;
+  padding: 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.vehicle-select:focus {
+  outline: none;
+  border-color: #003478;
+  box-shadow: 0 0 0 3px rgba(0, 52, 120, 0.1);
+}
+
+.vehicle-select option {
+  padding: 0.5rem;
+}
+
+/* Imagem do Veículo */
+.vehicle-large-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+}
+
+.vehicle-image-container {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 52, 120, 0.15);
+  border: 2px solid rgba(0, 52, 120, 0.1);
+}
+
+.vehicle-large-image {
+  width: 500px;
+  max-width: 90vw;
+  height: 350px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.2));
+  transition: all 0.4s ease;
+}
+
+.vehicle-large-image:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 8px 25px rgba(0, 52, 120, 0.25));
+}
+
+/* Input para Código Vin */
+.data-section {
+  margin-top: 2rem;
+}
+
+.vin-input-section {
+  margin-bottom: 2rem;
+}
+
+.form-label {
+  font-weight: 600;
+  color: #003478;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control-lg {
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.form-control-lg:focus {
+  border-color: #003478;
+  box-shadow: 0 0 0 3px rgba(0, 52, 120, 0.1);
+}
+
+/* Tabela */
+.table-section {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.vehicle-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table-header th {
+  background: linear-gradient(135deg, #003478 0%, #002855 100%);
+  color: white;
+  padding: 1.2rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-header th:first-child {
+  border-top-left-radius: 15px;
+}
+.table-header th:last-child {
+  border-top-right-radius: 15px;
+}
+
+.table-row td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f3f4;
+  color: #495057;
+  font-weight: 500;
+}
+
+.table-row:hover {
+  background: rgba(0, 52, 120, 0.02);
+}
+
+.table-row:last-child td {
+  border-bottom: none;
+}
+
+/* Estilos para o input VIN na tabela */
+.vin-input-cell {
+  padding: 1rem !important;
+  background: rgba(0, 52, 120, 0.02);
+  border-right: 2px solid #003478;
+}
+
+.vin-table-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #495057;
+  background: white;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.vin-table-input:focus {
+  outline: none;
+  border-color: #003478;
+  box-shadow: 0 0 0 3px rgba(0, 52, 120, 0.1);
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .metrics-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .metric-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 1rem;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  .metrics-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .metric-card {
+    padding: 1.2rem 1rem;
+  }
+
+  .metric-value {
+    font-size: 1.5rem;
+  }
+
+  .vehicle-center-image {
+    width: 200px;
+    height: 140px;
+  }
+
+  .vehicle-table {
+    font-size: 0.8rem;
+  }
+
+  .table-header th,
+  .table-row td {
+    padding: 0.8rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-main {
+    padding: 0.5rem;
+  }
+
+  .metric-card {
+    padding: 1rem;
+  }
+
+  .metric-card-header h3 {
+    font-size: 1rem;
+  }
+
+  .vehicle-center-image {
+    width: 150px;
+    height: 100px;
+  }
+
+  .table-header th,
+  .table-row td {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.75rem;
+  }
 }
 
 /* Cartão de boas-vindas */

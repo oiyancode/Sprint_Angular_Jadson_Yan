@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import {
@@ -20,12 +25,16 @@ interface VehicleData {
   lastUpdate: string;
   location: string;
   softwareVersion: string;
+  odometer: string;
+  fuelLevel: string;
+  latitude: string;
+  longitude: string;
 }
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
@@ -34,8 +43,11 @@ export class DashboardComponent implements OnInit {
   tableSearchForm: FormGroup;
   vehicles: Veiculo[] = [];
   selectedVehicle: Veiculo | null = null;
+  selectedVehicleName: string = '';
+  vinCode: string = '';
   vehicleData: VehicleData[] = [];
   filteredVehicleData: VehicleData[] = [];
+  selectedVehicleData: VehicleData | null = null;
 
   private searchSubject = new Subject<string>();
 
@@ -136,6 +148,31 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  onVehicleChange() {
+    if (this.selectedVehicleName) {
+      this.selectVehicle(this.selectedVehicleName);
+    } else {
+      this.selectedVehicle = null;
+      this.vehicleData = [];
+      this.filteredVehicleData = [];
+      this.selectedVehicleData = null;
+    }
+  }
+
+  onVinCodeChange() {
+    if (this.vinCode && this.vinCode.length > 0) {
+      // Procurar o veículo específico pelo código VIN
+      const foundVehicle = this.vehicleData.find(
+        (vehicle) =>
+          vehicle.vehicleCode.toLowerCase() === this.vinCode.toLowerCase()
+      );
+
+      this.selectedVehicleData = foundVehicle || null;
+    } else {
+      this.selectedVehicleData = null;
+    }
+  }
+
   loadVehicleData() {
     this.http
       .get<VehicleData[]>('http://localhost:3000/vehicleData')
@@ -151,42 +188,62 @@ export class DashboardComponent implements OnInit {
             {
               id: '1',
               vehicleCode: '2FRHDUYS2Y63NHD22454',
-              status: 'Conectado',
+              status: 'On',
               lastUpdate: '2024-01-15',
               location: 'São Paulo',
               softwareVersion: '2.1.0',
+              odometer: '5000 km',
+              fuelLevel: '90%',
+              latitude: '-12.2222',
+              longitude: '-35.2214',
             },
             {
               id: '2',
               vehicleCode: '3FTTW8E3XNRA12345',
-              status: 'Conectado',
+              status: 'On',
               lastUpdate: '2024-01-14',
               location: 'Rio de Janeiro',
               softwareVersion: '2.1.0',
+              odometer: '7500 km',
+              fuelLevel: '85%',
+              latitude: '-22.9068',
+              longitude: '-43.1729',
             },
             {
               id: '3',
               vehicleCode: '1FTFW1ET8DFC67890',
-              status: 'Offline',
+              status: 'On',
               lastUpdate: '2024-01-10',
               location: 'Belo Horizonte',
               softwareVersion: '2.0.5',
+              odometer: '12000 km',
+              fuelLevel: '65%',
+              latitude: '-19.9191',
+              longitude: '-43.9386',
             },
             {
               id: '4',
               vehicleCode: '1FMCU9J94MUA13579',
-              status: 'Conectado',
+              status: 'On',
               lastUpdate: '2024-01-16',
               location: 'Porto Alegre',
               softwareVersion: '2.1.0',
+              odometer: '3200 km',
+              fuelLevel: '95%',
+              latitude: '-30.0346',
+              longitude: '-51.2177',
             },
             {
               id: '5',
               vehicleCode: '3FMCR9B63NRD24680',
-              status: 'Conectado',
+              status: 'On',
               lastUpdate: '2024-01-15',
               location: 'Brasília',
               softwareVersion: '2.1.0',
+              odometer: '6800 km',
+              fuelLevel: '78%',
+              latitude: '-15.7942',
+              longitude: '-47.8822',
             },
           ];
           this.filteredVehicleData = this.vehicleData;
