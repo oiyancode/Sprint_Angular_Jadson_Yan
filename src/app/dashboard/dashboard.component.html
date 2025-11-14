@@ -1,0 +1,188 @@
+<!-- Fundo ranger.png -->
+<div class="dashboard-background">
+  <div class="dashboard-overlay">
+    <div class="dashboard-container">
+      <!-- Cartão de boas-vindas -->
+      <div class="welcome-card">
+        <div class="welcome-content">
+          <h1 class="welcome-title">Bem-vindo ao Dashboard Ford</h1>
+          <p class="welcome-text">
+            Sistema de gestão estratégica para monitoramento de veículos Ford.
+            Selecione um veículo abaixo para visualizar dados em tempo real.
+          </p>
+        </div>
+      </div>
+
+      <!-- Header com logout -->
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard Ford</h1>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="logout()"
+        >
+          <i class="bi bi-box-arrow-right me-2"></i>
+          Sair do Sistema
+        </button>
+      </div>
+
+      <!-- Seleção de Veículos -->
+      <div class="vehicle-selection">
+        <h2>Selecione um Veículo</h2>
+        <div class="vehicle-buttons">
+          <button
+            type="button"
+            class="vehicle-btn"
+            *ngFor="let vehicle of vehicles"
+            (click)="selectVehicle(vehicle.vehicle)"
+            [class.active]="selectedVehicle?.vehicle === vehicle.vehicle"
+          >
+            <img
+              [src]="getVehicleImage(vehicle.vehicle)"
+              [alt]="vehicle.vehicle"
+              class="vehicle-btn-image"
+            />
+            <span class="vehicle-btn-name">{{ vehicle.vehicle }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Visualização Individual do Veículo Selecionado -->
+      <div class="vehicle-display" *ngIf="selectedVehicle">
+        <!-- 4 Blocos de Informação -->
+        <div class="metrics-blocks">
+          <div class="metric-block">
+            <div class="metric-block-header">
+              <h3>Veículo</h3>
+            </div>
+            <div class="metric-block-content">
+              <span class="metric-block-value">{{
+                selectedVehicle.vehicle
+              }}</span>
+            </div>
+          </div>
+
+          <div class="metric-block">
+            <div class="metric-block-header">
+              <h3>Total de Vendas</h3>
+            </div>
+            <div class="metric-block-content">
+              <span class="metric-block-value primary">{{
+                selectedVehicle.volumetotal
+              }}</span>
+              <span class="metric-block-unit">Unid.</span>
+            </div>
+          </div>
+
+          <div class="metric-block">
+            <div class="metric-block-header">
+              <h3>Conectados</h3>
+            </div>
+            <div class="metric-block-content">
+              <span class="metric-block-value success">{{
+                selectedVehicle.connected
+              }}</span>
+              <span class="metric-block-unit">Unidad.</span>
+            </div>
+          </div>
+
+          <div class="metric-block">
+            <div class="metric-block-header">
+              <h3>Update Software</h3>
+            </div>
+            <div class="metric-block-content">
+              <span class="metric-block-value info">{{
+                selectedVehicle.softwareUpdates
+              }}</span>
+              <span class="metric-block-unit">Unidad.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Imagem do Veículo Centralizada -->
+        <div class="vehicle-center-display">
+          <img
+            [src]="getVehicleImage(selectedVehicle.vehicle)"
+            [alt]="selectedVehicle.vehicle"
+            class="vehicle-center-image"
+          />
+          <h2 class="vehicle-center-name">{{ selectedVehicle.vehicle }}</h2>
+        </div>
+      </div>
+
+      <!-- Busca por Modelo -->
+      <div class="search-section">
+        <h2>Buscar por Modelo</h2>
+        <form [formGroup]="searchForm" class="search-form">
+          <div class="form-group">
+            <label for="vehicleModel" class="form-label"
+              >Modelo do Veículo</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="vehicleModel"
+              formControlName="vehicleModel"
+              placeholder="Digite o modelo (ex: Mustang, Ranger)"
+            />
+          </div>
+        </form>
+      </div>
+
+      <!-- Tabela de Dados Detalhados -->
+      <div class="table-section" *ngIf="selectedVehicle">
+        <h2>Dados Detalhados - {{ selectedVehicle.vehicle }}</h2>
+
+        <!-- Busca na Tabela -->
+        <div class="table-search">
+          <form [formGroup]="tableSearchForm" class="search-form">
+            <div class="form-group">
+              <label for="vehicleCode" class="form-label"
+                >Código do Veículo</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="vehicleCode"
+                formControlName="vehicleCode"
+                placeholder="Buscar por código do veículo"
+              />
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Código do Veículo</th>
+                <th>Status</th>
+                <th>Última Atualização</th>
+                <th>Localização</th>
+                <th>Versão do Software</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vehicle of filteredVehicleData">
+                <td>{{ vehicle.vehicleCode }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.connected]="vehicle.status === 'Conectado'"
+                    [class.offline]="vehicle.status === 'Offline'"
+                  >
+                    {{ vehicle.status }}
+                  </span>
+                </td>
+                <td>{{ vehicle.lastUpdate }}</td>
+                <td>{{ vehicle.location }}</td>
+                <td>{{ vehicle.softwareVersion }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
