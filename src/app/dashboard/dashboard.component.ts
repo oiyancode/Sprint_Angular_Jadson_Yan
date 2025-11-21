@@ -154,9 +154,13 @@ export class DashboardComponent implements OnInit {
   }
 
   onVehicleChange() {
-    if (this.selectedVehicleName) {
+    if (this.selectedVehicleName && this.selectedVehicleName.trim() !== '') {
       this.selectVehicle(this.selectedVehicleName);
+    } else if (this.selectedVehicle) {
+      // Se já tem veículo selecionado e tentar voltar para vazio, mantém o atual
+      this.selectedVehicleName = this.selectedVehicle.vehicle;
     } else {
+      // Estado inicial - permite seleção vazia
       this.selectedVehicle = null;
       this.vehicleData = [];
       this.filteredVehicleData = [];
@@ -270,6 +274,8 @@ export class DashboardComponent implements OnInit {
     const imageMap: { [key: string]: string } = {
       Mustang: '/mustang.png',
       Ranger: '/ranger.png',
+      Explorer: '/ford.png', // Logo Ford para Explorer
+      Bronco: '/broncoSport.png', // Usar imagem do Bronco Sport para Bronco
       'Bronco Sport': '/broncoSport.png',
       Territory: '/territory.png',
     };

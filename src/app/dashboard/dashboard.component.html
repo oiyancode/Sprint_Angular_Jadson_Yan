@@ -38,7 +38,7 @@
             [(ngModel)]="selectedVehicleName"
             (change)="onVehicleChange()"
           >
-            <option value="">Selecione...</option>
+            <option value="" [disabled]="selectedVehicle">Selecione...</option>
             <option *ngFor="let vehicle of vehicles" [value]="vehicle.vehicle">
               {{ vehicle.vehicle }}
             </option>
