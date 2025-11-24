@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class HomeComponent {
   menuOpen: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
@@ -30,8 +31,7 @@ export class HomeComponent {
   }
 
   logout() {
-    localStorage.removeItem('isLoggedIn');
-    this.router.navigate(['/']);
+    this.authService.logout();
     this.menuOpen = false;
   }
 }

@@ -6,31 +6,22 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  pluck,
-  filter,
-} from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
-import { Veiculo, VeiculosAPI } from '../models/veiculo.model';
+import { Veiculo, VehicleData } from '../models/veiculo.model';
+import { VehicleService } from '../services/vehicle.service';
+import { AuthService } from '../services/auth.service';
 
-interface VehicleData {
-  id: string;
-  vehicleCode: string;
-  status: string;
-  lastUpdate: string;
-  location: string;
-  softwareVersion: string;
-  odometer: string;
-  fuelLevel: string;
-  latitude: string;
-  longitude: string;
-}
+// Constants
+const VEHICLE_IMAGES: { [key: string]: string } = {
+  Mustang: '/mustang.png',
+  Ranger: '/ranger.png',
+  Explorer: '/ford.png',
+  Bronco: '/broncoSport.png',
+  'Bronco Sport': '/broncoSport.png',
+  Territory: '/territory.png',
+};
 
 @Component({
   selector: 'app-dashboard',
@@ -49,13 +40,15 @@ export class DashboardComponent implements OnInit {
   vehicleData: VehicleData[] = [];
   filteredVehicleData: VehicleData[] = [];
   selectedVehicleData: VehicleData | null = null;
-
-  private searchSubject = new Subject<string>();
+  isLoadingVehicles = false;
+  isLoadingVehicleData = false;
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private http: HttpClient
+    private vehicleService: VehicleService,
+    private authService: AuthService
   ) {
     this.searchForm = this.fb.group({
       vehicleModel: [''],
@@ -91,51 +84,21 @@ export class DashboardComponent implements OnInit {
   }
 
   loadVehicles() {
-    this.http
-      .get<VeiculosAPI>('http://localhost:3000/vehicle')
-      .pipe(
-        pluck('vehicles'),
-        map((vehicles: Veiculo[]) => vehicles)
-      )
-      .subscribe({
-        next: (vehicles) => {
-          this.vehicles = vehicles;
-        },
-        error: (error) => {
-          console.error('Erro ao carregar veículos:', error);
-          // Dados mock para desenvolvimento
-          this.vehicles = [
-            {
-              id: '1',
-              vehicle: 'Mustang',
-              volumetotal: 150,
-              connected: 120,
-              softwareUpdates: 95,
-            },
-            {
-              id: '2',
-              vehicle: 'Ranger',
-              volumetotal: 200,
-              connected: 180,
-              softwareUpdates: 160,
-            },
-            {
-              id: '3',
-              vehicle: 'Bronco Sport',
-              volumetotal: 100,
-              connected: 85,
-              softwareUpdates: 75,
-            },
-            {
-              id: '4',
-              vehicle: 'Territory',
-              volumetotal: 80,
-              connected: 70,
-              softwareUpdates: 65,
-            },
-          ];
-        },
-      });
+    this.isLoadingVehicles = true;
+    this.errorMessage = '';
+
+    this.vehicleService.getVehicles().subscribe({
+      next: (vehicles: Veiculo[]) => {
+        this.vehicles = vehicles;
+        this.isLoadingVehicles = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar veículos:', error);
+        this.errorMessage =
+          'Erro ao carregar dados dos veículos. Tente novamente.';
+        this.isLoadingVehicles = false;
+      },
+    });
   }
 
   selectVehicle(model: string) {
@@ -183,81 +146,20 @@ export class DashboardComponent implements OnInit {
   }
 
   loadVehicleData() {
-    this.http
-      .get<VehicleData[]>('http://localhost:3000/vehicleData')
-      .subscribe({
-        next: (data) => {
-          this.vehicleData = data;
-          this.filteredVehicleData = data;
-        },
-        error: (error) => {
-          console.error('Erro ao carregar dados dos veículos:', error);
-          // Dados mock para desenvolvimento
-          this.vehicleData = [
-            {
-              id: '1',
-              vehicleCode: '2FRHDUYS2Y63NHD22454',
-              status: 'On',
-              lastUpdate: '2024-01-15',
-              location: 'São Paulo',
-              softwareVersion: '2.1.0',
-              odometer: '5000 km',
-              fuelLevel: '90%',
-              latitude: '-12.2222',
-              longitude: '-35.2214',
-            },
-            {
-              id: '2',
-              vehicleCode: '3FTTW8E3XNRA12345',
-              status: 'On',
-              lastUpdate: '2024-01-14',
-              location: 'Rio de Janeiro',
-              softwareVersion: '2.1.0',
-              odometer: '7500 km',
-              fuelLevel: '85%',
-              latitude: '-22.9068',
-              longitude: '-43.1729',
-            },
-            {
-              id: '3',
-              vehicleCode: '1FTFW1ET8DFC67890',
-              status: 'On',
-              lastUpdate: '2024-01-10',
-              location: 'Belo Horizonte',
-              softwareVersion: '2.0.5',
-              odometer: '12000 km',
-              fuelLevel: '65%',
-              latitude: '-19.9191',
-              longitude: '-43.9386',
-            },
-            {
-              id: '4',
-              vehicleCode: '1FMCU9J94MUA13579',
-              status: 'On',
-              lastUpdate: '2024-01-16',
-              location: 'Porto Alegre',
-              softwareVersion: '2.1.0',
-              odometer: '3200 km',
-              fuelLevel: '95%',
-              latitude: '-30.0346',
-              longitude: '-51.2177',
-            },
-            {
-              id: '5',
-              vehicleCode: '3FMCR9B63NRD24680',
-              status: 'On',
-              lastUpdate: '2024-01-15',
-              location: 'Brasília',
-              softwareVersion: '2.1.0',
-              odometer: '6800 km',
-              fuelLevel: '78%',
-              latitude: '-15.7942',
-              longitude: '-47.8822',
-            },
-          ];
-          this.filteredVehicleData = this.vehicleData;
-        },
-      });
+    this.isLoadingVehicleData = true;
+
+    this.vehicleService.getVehicleData().subscribe({
+      next: (data: VehicleData[]) => {
+        this.vehicleData = data;
+        this.filteredVehicleData = data;
+        this.isLoadingVehicleData = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar dados dos veículos:', error);
+        this.errorMessage = 'Erro ao carregar dados detalhados dos veículos.';
+        this.isLoadingVehicleData = false;
+      },
+    });
   }
 
   filterVehicleData(code: string) {
@@ -271,15 +173,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getVehicleImage(vehicle: string): string {
-    const imageMap: { [key: string]: string } = {
-      Mustang: '/mustang.png',
-      Ranger: '/ranger.png',
-      Explorer: '/ford.png', // Logo Ford para Explorer
-      Bronco: '/broncoSport.png', // Usar imagem do Bronco Sport para Bronco
-      'Bronco Sport': '/broncoSport.png',
-      Territory: '/territory.png',
-    };
-    return imageMap[vehicle] || '/ford.png';
+    return VEHICLE_IMAGES[vehicle] || '/ford.png';
   }
 
   menuOpen: boolean = false;
@@ -299,8 +193,7 @@ export class DashboardComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('isLoggedIn');
-    this.router.navigate(['/']);
+    this.authService.logout();
     this.menuOpen = false;
   }
 }

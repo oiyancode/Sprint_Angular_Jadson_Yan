@@ -25,6 +25,19 @@
 
   <!-- Container principal -->
   <div class="dashboard-main">
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoadingVehicles" class="text-center mt-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando dados dos veículos...</p>
+    </div>
+
     <!-- 4 Cards de Métricas -->
     <div class="metrics-row">
       <!-- Card Veículo com Dropdown -->
@@ -97,8 +110,19 @@
       </div>
     </div>
 
+    <!-- Loading Vehicle Data -->
+    <div
+      *ngIf="isLoadingVehicleData && selectedVehicle"
+      class="text-center mt-3"
+    >
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando dados detalhados...</p>
+    </div>
+
     <!-- Tabela de Dados do Veículo -->
-    <div class="table-section" *ngIf="selectedVehicle">
+    <div class="table-section" *ngIf="selectedVehicle && !isLoadingVehicleData">
       <div class="table-container">
         <table class="vehicle-table">
           <thead>
@@ -140,6 +164,5 @@
           </tbody>
         </table>
       </div>
-    </div>
   </div>
 </div>

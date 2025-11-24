@@ -1,13 +1,28 @@
-export interface Veiculos extends Array<Veiculo> {}
-
 export interface Veiculo {
-  id: number | string;
+  id: number;
   vehicle: string;
-  volumetotal: number | string;
-  connected: number | string;
-  softwareUpdates: number | string;
+  volumetotal: number;
+  connected: number;
+  softwareUpdates: number;
+}
+
+export interface VehicleData {
+  id: string;
+  vehicleCode: string;
+  status: string;
+  lastUpdate: string;
+  location: string;
+  softwareVersion: string;
+  odometer: string;
+  fuelLevel: string;
+  latitude: string;
+  longitude: string;
 }
 
 export interface VeiculosAPI {
-  vehicles: Veiculos;
+  vehicles: Veiculo[];
+}
+
+export interface VehicleDataAPI {
+  vehicleData: VehicleData[];
 }

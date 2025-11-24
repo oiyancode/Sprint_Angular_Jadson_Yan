@@ -6,8 +6,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +23,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private http: HttpClient
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       nome: ['', [Validators.required]],
@@ -33,12 +33,9 @@ export class LoginComponent {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      const { nome, senha } = this.loginForm.value;
+      const credentials = this.loginForm.value;
 
-      // Validação simples conforme especificado no PDF
-      if (nome === 'admin' && senha === '123456') {
-        // Login bem-sucedido
-        localStorage.setItem('isLoggedIn', 'true');
+      if (this.authService.login(credentials)) {
         this.router.navigate(['/home']);
       } else {
         this.loginError = 'Credenciais inválidas';
