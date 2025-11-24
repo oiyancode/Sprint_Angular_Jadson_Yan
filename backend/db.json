@@ -1,0 +1,100 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nome": "admin",
+      "email": "admin@email.com",
+      "senha": "123456"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "vehicle": "Ranger",
+      "volumetotal": 145760,
+      "connected": 70000,
+      "softwareUpdates": 27550,
+      "img": "ranger.png"
+    },
+    {
+      "id": 2,
+      "vehicle": "Mustang",
+      "volumetotal": 1500,
+      "connected": 500,
+      "softwareUpdates": 750,
+      "img": "mustang.png"
+    },
+    {
+      "id": 3,
+      "vehicle": "Territory",
+      "volumetotal": 4560,
+      "connected": 4000,
+      "softwareUpdates": 3050,
+      "img": "territory.png"
+    },
+    {
+      "id": 4,
+      "vehicle": "Bronco Sport",
+      "volumetotal": 7560,
+      "connected": 4060,
+      "softwareUpdates": 2050,
+      "img": "broncoSport.png"
+    }
+  ],
+  "vehicleData": [
+    {
+      "id": 1,
+      "vin": "2FRHDUYS2Y63NHD22454",
+      "odometro": 23344,
+      "nivelCombustivel": 76,
+      "status": "ON",
+      "lat": -12.2322,
+      "long": -35.2314
+    },
+    {
+      "id": 2,
+      "vin": "2RFAASDY54E4HDU34874",
+      "odometro": 130000,
+      "nivelCombustivel": 19,
+      "status": "OFF",
+      "lat": -12.2322,
+      "long": -35.2314
+    },
+    {
+      "id": 3,
+      "vin": "2FRHDUYS2Y63NHD22455",
+      "odometro": 50000,
+      "nivelCombustivel": 90,
+      "status": "ON",
+      "lat": -12.2322,
+      "long": -35.2314
+    },
+    {
+      "id": 4,
+      "vin": "2RFAASDY54E4HDU34875",
+      "odometro": 10000,
+      "nivelCombustivel": 25,
+      "status": "OFF",
+      "lat": -12.2322,
+      "long": -35.2314
+    },
+    {
+      "id": 5,
+      "vin": "2FRHDUYS2Y63NHD22654",
+      "odometro": 23544,
+      "nivelCombustivel": 76,
+      "status": "ON",
+      "lat": -12.2322,
+      "long": -35.2314
+    },
+    {
+      "id": 6,
+      "vin": "2FRHDUYS2Y63NHD22854",
+      "odometro": 23574,
+      "nivelCombustivel": 76,
+      "status": "ON",
+      "lat": -12.2322,
+      "long": -35.2314
+    }
+  ]
+}

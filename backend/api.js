@@ -1,0 +1,87 @@
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
+
+const app = express();
+
+// Basic middleware
+app.use(cors());
+app.use(express.json());
+
+// Load data from db.json
+const dbPath = path.join(__dirname, 'db.json');
+let dbData = {};
+
+try {
+    const rawData = fs.readFileSync(dbPath, 'utf8');
+    dbData = JSON.parse(rawData);
+} catch (error) {
+    console.error('Erro ao carregar db.json:', error);
+    dbData = { vehicles: [], vehicleData: [], users: [] };
+}
+
+// Simple test route
+app.get("/test", (req, res) => {
+    res.json({ message: "API is working!" });
+});
+
+// Vehicles route
+app.get("/vehicles", (req, res) => {
+    res.json({ vehicles: dbData.vehicles || [] });
+});
+
+// Login route
+app.post("/login", (req, res) => {
+    const { nome, senha } = req.body;
+    const user = dbData.users?.find(u => u.nome === nome && u.senha === senha);
+    
+    if (user) {
+        res.json({ id: user.id, nome: user.nome, email: user.email });
+    } else {
+        res.status(401).json({ message: "Credenciais inválidas" });
+    }
+});
+
+// Vehicle data route - Busca por VIN
+app.post("/vehicleData", (req, res) => {
+    const { vin } = req.body;
+    
+    if (!vin) {
+        // Se não há VIN, retorna todos os dados
+        res.json({ vehicleData: dbData.vehicleData || [] });
+        return;
+    }
+    
+    // Buscar dados específicos do VIN
+    const vehicleData = dbData.vehicleData?.find(v => v.vin === vin);
+    
+    if (vehicleData) {
+        res.json(vehicleData);
+    } else {
+        res.status(404).json({ message: "Veículo não encontrado para o VIN fornecido" });
+    }
+});
+
+// Rota adicional para buscar dados por VIN via GET
+app.get("/vehicleData/:vin", (req, res) => {
+    const { vin } = req.params;
+    const vehicleData = dbData.vehicleData?.find(v => v.vin === vin);
+    
+    if (vehicleData) {
+        res.json(vehicleData);
+    } else {
+        res.status(404).json({ message: "Veículo não encontrado para o VIN fornecido" });
+    }
+});
+
+// Rota para obter todos os dados de veículos
+app.get("/vehicleData", (req, res) => {
+    res.json({ vehicleData: dbData.vehicleData || [] });
+});
+
+const PORT = process.env.PORT || 3002;
+
+app.listen(PORT, () => {
+    console.log(`API running on port ${PORT}`);
+});
