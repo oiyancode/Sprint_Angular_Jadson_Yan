@@ -13,21 +13,63 @@ import {
   providedIn: 'root',
 })
 export class VehicleService {
-  private readonly API_BASE_URL = 'http://localhost:3000';
+  private readonly API_BASE_URL = 'http://localhost:3002';
 
   constructor(private http: HttpClient) {}
 
   getVehicles(): Observable<Veiculo[]> {
-    return this.http.get<VeiculosAPI>(`${this.API_BASE_URL}/vehicle`).pipe(
+    return this.http.get<VeiculosAPI>(`${this.API_BASE_URL}/vehicles`).pipe(
       map((response) => response.vehicles),
       catchError(() => this.getMockVehicles())
     );
   }
 
+  // Método para obter todos os dados de veículos
   getVehicleData(): Observable<VehicleData[]> {
-    return this.http
-      .get<VehicleData[]>(`${this.API_BASE_URL}/vehicleData`)
-      .pipe(catchError(() => this.getMockVehicleData()));
+    return this.http.get<{ vehicleData: any[] }>(`${this.API_BASE_URL}/vehicleData`).pipe(
+      map((response) => this.transformVehicleDataList(response.vehicleData)),
+      catchError(() => this.getMockVehicleData())
+    );
+  }
+
+  // Método para obter dados de um veículo específico por VIN
+  getVehicleDataByVin(vin: string): Observable<VehicleData | null> {
+    return this.http.get<any>(`${this.API_BASE_URL}/vehicleData/${vin}`).pipe(
+      map((response) => this.transformVehicleData(response)),
+      catchError(() => of(null))
+    );
+  }
+
+  private transformVehicleDataList(apiResponse: any[]): VehicleData[] {
+    // Transformar a lista de respostas da API para o formato esperado pelo frontend
+    return apiResponse.map(item => ({
+      id: item.id?.toString() || '',
+      vehicleCode: item.vin || '',
+      status: item.status === 'ON' ? 'On' : 'Off',
+      lastUpdate: new Date().toISOString().split('T')[0],
+      location: 'Localização Desconhecida',
+      softwareVersion: '1.0.0',
+      odometer: `${item.odometro || 0} km`,
+      fuelLevel: `${item.nivelCombustivel || 0}%`,
+      latitude: item.lat?.toString() || '0',
+      longitude: item.long?.toString() || '0',
+    }));
+  }
+
+  private transformVehicleData(apiResponse: any): VehicleData {
+    // Transformar uma resposta individual da API para o formato esperado pelo frontend
+    return {
+      id: apiResponse.id?.toString() || '',
+      vehicleCode: apiResponse.vin || '',
+      status: apiResponse.status === 'ON' ? 'On' : 'Off',
+      lastUpdate: new Date().toISOString().split('T')[0],
+      location: 'Localização Desconhecida',
+      softwareVersion: '1.0.0',
+      odometer: `${apiResponse.odometro || 0} km`,
+      fuelLevel: `${apiResponse.nivelCombustivel || 0}%`,
+      latitude: apiResponse.lat?.toString() || '0',
+      longitude: apiResponse.long?.toString() || '0',
+    };
   }
 
   private getMockVehicles(): Observable<Veiculo[]> {

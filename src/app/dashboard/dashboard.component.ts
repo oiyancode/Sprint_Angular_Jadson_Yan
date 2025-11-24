@@ -117,6 +117,10 @@ export class DashboardComponent implements OnInit {
   }
 
   onVehicleChange() {
+    // Limpar dados do VIN anterior quando trocar de veículo
+    this.vinCode = '';
+    this.selectedVehicleData = null;
+
     if (this.selectedVehicleName && this.selectedVehicleName.trim() !== '') {
       this.selectVehicle(this.selectedVehicleName);
     } else if (this.selectedVehicle) {
