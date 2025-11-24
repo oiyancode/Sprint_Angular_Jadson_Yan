@@ -43,13 +43,23 @@ app.post("/login", (req, res) => {
     }
 });
 
-// Vehicle data route - Busca por VIN
+// Vehicle data route - Busca por VIN com paginação para reduzir contexto
 app.post("/vehicleData", (req, res) => {
-    const { vin } = req.body;
+    const { vin, limit = 50, offset = 0 } = req.body;
     
     if (!vin) {
-        // Se não há VIN, retorna todos os dados
-        res.json({ vehicleData: dbData.vehicleData || [] });
+        // Se não há VIN, retorna dados paginados para reduzir tamanho do contexto
+        const totalData = dbData.vehicleData || [];
+        const paginatedData = totalData.slice(offset, offset + limit);
+        res.json({ 
+            vehicleData: paginatedData,
+            pagination: {
+                total: totalData.length,
+                limit,
+                offset,
+                hasMore: offset + limit < totalData.length
+            }
+        });
         return;
     }
     
@@ -75,9 +85,23 @@ app.get("/vehicleData/:vin", (req, res) => {
     }
 });
 
-// Rota para obter todos os dados de veículos
+// Rota para obter todos os dados de veículos com paginação
 app.get("/vehicleData", (req, res) => {
-    res.json({ vehicleData: dbData.vehicleData || [] });
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    
+    const totalData = dbData.vehicleData || [];
+    const paginatedData = totalData.slice(offset, offset + limit);
+    
+    res.json({ 
+        vehicleData: paginatedData,
+        pagination: {
+            total: totalData.length,
+            limit,
+            offset,
+            hasMore: offset + limit < totalData.length
+        }
+    });
 });
 
 const PORT = process.env.PORT || 3002;
